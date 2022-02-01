@@ -1,4 +1,7 @@
 import wordlefreq as wf
+import logging
+
+logging.basicConfig(filename="debug.log",level=logging.DEBUG)
 
 def main(letters_remaining,letter_status):
     words = wf.scored("wordle.txt")
@@ -26,24 +29,29 @@ def guess(letters_remaining,letter_status,words):
         letters_remaining,words = orange_letter(letters_remaining,oranges,guess,words)
         for i in oranges:
             greys.remove(i)
-    letters_remaining = grey_letter(letters_remaining,greys,guess)
+    letters_remaining = grey_letter(letters_remaining,letter_status,greys,guess)
+    logging.debug(letters_remaining)
     words = recalc_words(letters_remaining, words)
     return letters_remaining, letter_status, words
 
 # Done
-def grey_letter(letters_remaining,ind,guess):
-    for i in ind:
-        try:
-            letters_remaining[i].remove(guess[i])
-        except:
-            pass
+def grey_letter(letters_remaining,letter_status,ind,guess):
+    for index, value in enumerate(ind):
+        for ind, chars in enumerate(letters_remaining):
+            if letter_status[ind] == 'known':
+                    continue
+            try:
+                letters_remaining[ind].remove(guess[index])
+                logging.debug(guess[ind])
+            except:
+                pass
     return letters_remaining
 
 # Done
 def green_letter(letters_remaining,letter_status,ind,guess):
     for i in ind:
         letters_remaining[i] = [guess[i]]
-        letter_status[i] = 'k'
+        letter_status[i] = 'known'
     return letters_remaining, letter_status
 
 # Done
@@ -88,7 +96,7 @@ def best_guesses(words):
 
 letters = list('abcdefghijklmnopqrstuvwxyz')
 letters_remaining = [[letter for letter in letters]for index in range(5)]
-letter_status = ['u','u','u','u','u']
+letter_status = ['unknown','unknown','unknown','unknown','unknown']
 
 if __name__ == '__main__':
     main(letters_remaining,letter_status)
