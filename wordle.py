@@ -58,10 +58,6 @@ def orange_letter(letters_remaining,indexes,guess,words):
 
 # Done
 def recalc_words(letters, words):
-    # Iterate over each word.
-    # Assume that a word should be in the result
-    # until we reach a letter that violates the
-    # constraint set by the letters list.
     result = []
     for word in words:
         all_letters_match = True
